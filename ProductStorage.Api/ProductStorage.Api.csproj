@@ -4,6 +4,16 @@
     <ProjectReference Include="..\ProductStorage.BLL\ProductStorage.BLL.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="12.2.0" />
+    <PackageReference Include="Grpc.AspNetCore" Version="2.85.0" />
+    <PackageReference Include="Grpc.AspNetCore.Server.Reflection" Version="2.85.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Protobuf Include="Protos\products.proto" GrpcServices="Server" />
+  </ItemGroup>
+
   <PropertyGroup>
     <TargetFramework>net10.0</TargetFramework>
     <Nullable>enable</Nullable>
