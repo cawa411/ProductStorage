@@ -1,7 +1,9 @@
 using System.Globalization;
+using System.Text.Json.Serialization;
 using FluentValidation;
 using ProductStorage.Api.Grpc;
 using ProductStorage.Api.Grpc.Interceptors;
+using ProductStorage.Api.Http.Middleware;
 using ProductStorage.BLL;
 using ProductStorage.BLL.Validators;
 using ProductStorage.DAL;
@@ -21,8 +23,20 @@ builder.Services.AddGrpc(options =>
 });
 builder.Services.AddGrpcReflection();
 
+builder.Services
+    .AddControllers()
+    .AddJsonOptions(options => options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()));
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
+
 var app = builder.Build();
 
+app.UseMiddleware<ErrorHandlingMiddleware>();
+
+app.UseSwagger();
+app.UseSwaggerUI();
+
+app.MapControllers();
 app.MapGrpcService<ProductsGrpcService>();
 app.MapGrpcReflectionService();
 
