@@ -9,7 +9,7 @@ public class CreateProductCommandValidator : AbstractValidator<CreateProductComm
     {
         RuleFor(x => x.Name).NotEmpty().MaximumLength(200);
         RuleFor(x => x.Price).GreaterThan(0).PrecisionScale(18, 2, true);
-        RuleFor(x => x.Weight).GreaterThan(0);
+        RuleFor(x => x.Weight).GreaterThan(0).Must(double.IsFinite).WithMessage("'Weight' должно быть конечным числом.");
         RuleFor(x => x.Type).IsInEnum();
         RuleFor(x => x.WarehouseNumber).GreaterThan(0);
     }

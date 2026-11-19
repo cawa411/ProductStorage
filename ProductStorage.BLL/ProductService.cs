@@ -39,7 +39,8 @@ public class ProductService(
         listValidator.ValidateAndThrow(query);
 
         var filter = new ProductFilter(query.CreatedDate, query.Type, query.WarehouseNumber);
-        var (items, totalCount) = repository.Find(filter, (query.Page - 1) * query.PageSize, query.PageSize);
+        var skip = (int)Math.Min((long)(query.Page - 1) * query.PageSize, int.MaxValue);
+        var (items, totalCount) = repository.Find(filter, skip, query.PageSize);
 
         return new PagedResult<ProductModel>(items.Select(ToModel).ToList(), totalCount, query.Page, query.PageSize);
     }

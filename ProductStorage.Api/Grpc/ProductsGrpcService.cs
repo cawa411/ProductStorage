@@ -15,7 +15,7 @@ public class ProductsGrpcService(IProductService productService) : Products.Prod
     {
         var id = productService.Create(new CreateProductCommand(
             request.Name,
-            (decimal)request.Price,
+            ToPrice(request.Price),
             request.Weight,
             (DomainProductType)request.Type,
             request.WarehouseNumber));
@@ -49,6 +49,18 @@ public class ProductsGrpcService(IProductService productService) : Products.Prod
             throw new RpcException(new Status(StatusCode.InvalidArgument, $"Некорректный Id: \"{request.Id}\"."));
 
         return Task.FromResult(ToReply(productService.GetById(id)));
+    }
+
+    private static decimal ToPrice(double value)
+    {
+        try
+        {
+            return (decimal)value;
+        }
+        catch (OverflowException)
+        {
+            throw new RpcException(new Status(StatusCode.InvalidArgument, $"Некорректная цена: {value}."));
+        }
     }
 
     private static DateOnly ParseDate(string value)
