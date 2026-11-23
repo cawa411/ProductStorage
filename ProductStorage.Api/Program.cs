@@ -7,6 +7,7 @@ using ProductStorage.Api.Http.Middleware;
 using ProductStorage.BLL;
 using ProductStorage.BLL.Validators;
 using ProductStorage.DAL;
+using ProductStorage.DAL.Migrations;
 
 ValidatorOptions.Global.LanguageManager.Culture = new CultureInfo("ru");
 
@@ -39,5 +40,9 @@ app.UseSwaggerUI();
 app.MapControllers();
 app.MapGrpcService<ProductsGrpcService>();
 app.MapGrpcReflectionService();
+
+var connectionString = app.Configuration.GetConnectionString("DefaultConnection")
+    ?? throw new InvalidOperationException("Не задана строка подключения DefaultConnection.");
+MigrationRunner.RunMigrations(connectionString);
 
 app.Run();
